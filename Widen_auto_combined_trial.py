@@ -166,7 +166,7 @@ class ResNet(nn.Module):
 
 
 if __name__ == '__main__':
-    net = ResNet().cuda()
+    net = ResNet()
     ini_epoch = 0
 
     transform = T.Compose([
@@ -203,22 +203,22 @@ if __name__ == '__main__':
     #net,optimizer,ini_epoch = load_model("model_widen.pkl",optimizer,net)
 
 
-    for epoch in range(ini_epoch,200):
+    for epoch in range(ini_epoch,120):
 
         running_loss = 0.0
         for i, data in enumerate(trainloader, 0):
 
             inputs, labels = data
-            inputs = inputs.cuda()
-            labels = labels.cuda()
+           # inputs = inputs.cuda()
+           # labels = labels.cuda()
             inputs, labels = Variable(inputs), Variable(labels)
             optimizer.zero_grad()
-            outputs, encoded, decoded = net(inputs)
-            loss = criterion(outputs, labels) + criterion_auto(encoded,decoded)
+            outputs = net(inputs)
+            loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
-            if epoch % 60 ==0 and i == 0:
-                lr = 0.1 * (0.2** math.floor(epoch / 60))
+            if epoch % 50 ==0 and i == 0:
+                lr = 0.1 * (0.2** math.floor(epoch / 50))
                 for param in optimizer.param_groups:
                     param['lr'] = lr
                 print("Change rage: " + str(lr))
